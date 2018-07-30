@@ -76,8 +76,8 @@ impl MapManager {
             map_pos.x = 0;
         }
 
-        if map_pos.x + (end_slice - begin_slice) > GAME_AREA_SIZE.x as i32 {
-            end_slice = (GAME_AREA_SIZE.x as i32 - map_pos.x) + begin_slice;
+        if map_pos.x + (end_slice - begin_slice) > GAME_AREA_SIZE.x {
+            end_slice = (GAME_AREA_SIZE.x - map_pos.x) + begin_slice;
         }
 
         for y in 0..MAP_SIZE.y {
