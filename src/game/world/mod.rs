@@ -6,6 +6,8 @@ use maths::Vector2D;
 mod chunk;
 pub use self::chunk::{Chunk, CHUNK_SIZE};
 
+pub const WORLD_SIZE: Vector2D<u32> = Vector2D { x: 1, y: 1 };
+
 pub struct World {
     //error_chunk: Chunk,
     chunks: HashMap<Vector2D<u32>, Chunk>,
@@ -24,11 +26,15 @@ impl World {
 
         for y in -1..=1 {
             for x in -1..=1 {
-                if (player_chunk_pos.x == 0 && x < 0) || (player_chunk_pos.y == 0 && y < 0) {
+                if (x < 0 && player_chunk_pos.x == 0) || (y < 0 && player_chunk_pos.y == 0) {
                     continue;
                 }
 
                 let chunk_pos = player_chunk_pos.add_signed(Vector2D::new(x, y));
+                if (x > 0 && chunk_pos.x >= WORLD_SIZE.x) || (y > 0 && chunk_pos.y >= WORLD_SIZE.y)
+                {
+                    continue;
+                }
 
                 //To do: Improve the cotains key followed by the insert.
                 if !self.chunks.contains_key(&chunk_pos) {

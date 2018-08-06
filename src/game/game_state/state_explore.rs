@@ -4,6 +4,7 @@ use game::UpdateResult;
 use graphics::Colour;
 use graphics::Renderer;
 
+use game::world::{CHUNK_SIZE, WORLD_SIZE};
 use game::Console;
 use game::Player;
 use game::World;
@@ -69,13 +70,19 @@ impl StateExplore {
 
     fn move_player(&mut self, movement: Vector2D<i32>) -> bool {
         let player_pos = self.player.position;
-        if (player_pos.x == 0 && movement.x < 0) || (player_pos.y == 0 && movement.y < 0) {
+        if (movement.x < 0 && player_pos.x == 0) || (movement.y < 0 && player_pos.y == 0) {
             return false;
         }
 
-        let next_position = self.player.position.add_signed(movement);
-        match self.world.get_tile(next_position) {
-            '.' | ',' | '|' | '\'' => {
+        let next_pos = self.player.position.add_signed(movement);
+        if (movement.x > 0 && next_pos.x >= WORLD_SIZE.x * CHUNK_SIZE.x)
+            || (movement.y > 0 && next_pos.y >= WORLD_SIZE.y * CHUNK_SIZE.y)
+        {
+            return false;
+        }
+
+        match self.world.get_tile(next_pos) {
+            _ => {
                 self.player.move_position(movement);
                 true
             }
